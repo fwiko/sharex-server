@@ -13,6 +13,7 @@ db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (
 
 const database = {};
 
+// retreive a file record using the access code provided with the URL
 database.getFile = function (accessCode) {
     return new Promise(resolve => {
         db.get(`SELECT * FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err, row) => {
@@ -22,6 +23,7 @@ database.getFile = function (accessCode) {
     })
 }
 
+// add a new file record to the database
 database.addFile = async function (filePath, _callback) {
     const accessCode = await database.getNewCode();
     return new Promise(resolve => {
@@ -32,6 +34,7 @@ database.addFile = async function (filePath, _callback) {
     });
 }
 
+// generate a new UNIQUE access code
 database.getNewCode = function () {
     const code = utility.randomString(config.codes.length);
     return new Promise(async resolve => {
