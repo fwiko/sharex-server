@@ -36,9 +36,7 @@ If you are running through a reverse proxy such as [NGINX](https://www.nginx.com
 
 Here's how this would be done within an NGINX virtual-host file:
 
-```
-
-```conf
+```nginx
 location /upload {
     ...
     client_max_body_size 1000M;
