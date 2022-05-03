@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const router = require('express').Router();
 const utility = require('../utility');
 const database = require('../database');
-const config = require('../../config');
+const config = require('../../data/config');
 
 // handle a file upload POST request
 router.post('/upload', async (req, res) => {

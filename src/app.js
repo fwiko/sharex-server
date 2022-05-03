@@ -2,7 +2,7 @@
 const path = require('path');
 const express = require('express');
 const fileUpload = require('express-fileupload');
-const config = require('../config');
+const config = require('../data/config');
 
 // initialise environment variables from .env file
 require('dotenv').config({ path: '.env' });

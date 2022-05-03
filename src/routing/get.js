@@ -3,7 +3,7 @@ const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
 const router = require('express').Router();
-const config = require('../../config');
+const config = require('../../data/config');
 const database = require('../database');
 
 // get and serve the requested file

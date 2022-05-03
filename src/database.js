@@ -1,7 +1,7 @@
 // dependencies
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('database.db');
-const config = require('../config');
+const db = new sqlite3.Database('data/database.db');
+const config = require('../data/config');
 const utility = require('./utility');
 
 db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (

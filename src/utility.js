@@ -2,7 +2,7 @@
 const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
-const config = require('../config');
+const config = require('../data/config');
 
 const utility = {}
 
@@ -16,6 +16,7 @@ utility.randomString = function (length) {
 
 utility.filePath = function (fileName) {
     return path.join(
+        "data",
         config.files.directory,
         mime.lookup(fileName).split("/")[0],
         fileName
