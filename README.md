@@ -11,7 +11,7 @@ docker build -t sharex-server .
 ## Start the container
 the `--network` and `--ip` flags are optional here and are only be used if you are connecting this container to an internal docker network.
 ```bash
-docker run -d -v $(pwd)/config.json:/usr/src/app/config.json \
+docker run -d -v $(pwd)/data:/usr/src/app/data \
 --network app_net \
 --ip <networkIp> \
 -e PASSWORD_HASH='<passwordHash>' \
