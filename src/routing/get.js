@@ -1,22 +1,23 @@
 // dependencies
 const fs = require('fs');
-const path = require('path');
 const mime = require('mime');
+const path = require('path');
 const router = require('express').Router();
+const config = require('../../config');
+const database = require('../database');
 
-// serve the requested file if available
-router.get('/:img', (req, res) => {
-    // get local file path
-    const filePath = path.join('uploads', mime.lookup(req.params.img).split("/")[0], req.params.img);
-    // check if file exists
-    if (!fs.existsSync(filePath)) return res.sendStatus(404);
-
+// get and serve the requested file
+router.get(`/:fileCode`, async (req, res) => {
+    const fileRecord = await database.getFile(req.params.fileCode);
+    // check if file record and file exist
+    if (!fileRecord) return res.sendStatus(404);
+    if (!fs.existsSync(fileRecord.FilePath)) return res.sendStatus(404);
     // set the headers and serve the file
-    res.writeHead(200, { 'Content-Type': mime.lookup(filePath) });
-    return fs.createReadStream(filePath).pipe(res);
+    res.writeHead(200, { 'Content-Type': mime.lookup(fileRecord.FilePath), 'Content-disposition': `inline; filename="${path.basename(fileRecord.FilePath)}"` });
+    return fs.createReadStream(fileRecord.FilePath).pipe(res);
 });
 
-// return 403 forbidden on invalid routes
-router.get('*', (req, res) => res.sendStatus(403));
+// return 404 not found on invalid routes
+router.get('*', (req, res) => res.sendStatus(404));
 
 module.exports = router;
