@@ -13,8 +13,6 @@ router.post('/upload', async (req, res) => {
     if (!req.headers.password || !await bcrypt.compare(req.headers.password, process.env.PASSWORD_HASH)) return res.status(403).end('Unauthorised.');
     // if the file is not valid return a 400 bad request response
     if (!req.files.file) return res.status(400).end('No file uploaded.');
-    // if the size of the file is above the set threshold in megabytes return 413 request entity too large
-    if (req.files.file.size / 1024 ** 2 > config.files.maxSize) return res.status(413).end('File too large.');
 
     // path of the new file to be created
     const filePath = utility.filePath(req.files.file.name);

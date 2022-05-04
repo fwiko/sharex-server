@@ -20,7 +20,7 @@ database.getFile = function (accessCode) {
             if (err) throw err;
             resolve(row);
         });
-    })
+    });
 }
 
 // add a new file record to the database
@@ -29,6 +29,7 @@ database.addFile = async function (filePath, _callback) {
     return new Promise(resolve => {
         db.run(`INSERT INTO AvailableFiles (AccessCode, FilePath) VALUES (?, ?)`, [accessCode, filePath], (err) => {
             if (err) throw err;
+            console.log(`Added file ${filePath} with access code ${accessCode}`);
             resolve({ accessCode, filePath });
         });
     });
@@ -45,7 +46,7 @@ database.getNewCode = function () {
                 } else {
                     resolve(code);
                 }
-            })
+            });
     });
 }
 
