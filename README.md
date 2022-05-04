@@ -19,7 +19,7 @@ docker run -d -v $(pwd)/data:/usr/src/app/data \
 --name sharex-server sharex-server:latest
 ```
 
-The `PASSWORD_HASH` variable must be created using bcrypt as can be done using the [bcrypt node module](https://www.npmjs.com/package/bcrypt).
+The `PASSWORD_HASH` variable must be created using bcrypt as can be done using the [bcrypt module](https://www.npmjs.com/package/bcrypt).
 
 ```bash
 > const bcrypt = require('bcrypt');
