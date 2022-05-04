@@ -44,3 +44,4 @@ location /upload {
 
 ShareX must be configured to upload files to this server, this can be done by navigating to `Destinations > Custom Uploader Settings`.
 
+![ShareX Configuration](data/sharex_config.png)
