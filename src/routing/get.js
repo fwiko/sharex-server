@@ -18,6 +18,6 @@ router.get(`/:fileCode`, async (req, res) => {
 });
 
 // return 404 not found on invalid routes
-router.get('*', (req, res) => res.status(403).send(`${req.secure ? 'https' : 'http'}://${req.headers.host}/`));
+router.get('*', (req, res) => res.status(404).end());
 
 module.exports = router;
