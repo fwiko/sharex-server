@@ -6,6 +6,7 @@ const config = require('../data/config');
 
 const utility = {}
 
+// returns a random string of the specified length
 utility.randomString = function (length) {
     var string = '';
     for (var i = 0; i < length; i++) {
@@ -14,6 +15,7 @@ utility.randomString = function (length) {
     return string;
 }
 
+// returns a complete filepath for a new file
 utility.filePath = function (fileName) {
     return path.join(
         "data",
@@ -23,6 +25,7 @@ utility.filePath = function (fileName) {
     );
 }
 
+// checks if a directory exists, and creates it if it doesn't
 utility.ensureDirectory = function (dir) {
     if (!fs.existsSync(dir)) return fs.mkdirSync(dir, { recursive: true });
     return dir;

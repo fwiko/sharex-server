@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const router = require('express').Router();
 const utility = require('../utility');
 const database = require('../database');
-const config = require('../../data/config');
 
 // handle a file upload POST request
 router.post('/upload', async (req, res) => {
@@ -16,12 +15,12 @@ router.post('/upload', async (req, res) => {
 
     // path of the new file to be created
     const filePath = utility.filePath(req.files.file.name);
-    utility.ensureDirectory(path.dirname(filePath));
     // add file location/access information to the database
     const fileRecord = await database.addFile(filePath);
 
     // save the uploaded file to the file directory
     try {
+        utility.ensureDirectory(path.dirname(filePath));
         await fs.writeFileSync(filePath, req.files.file.data);
     } catch (err) {
         console.error(err);
