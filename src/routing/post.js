@@ -16,7 +16,7 @@ router.post('/upload', async (req, res) => {
     // path of the new file to be created
     const filePath = utility.filePath(req.files.file.name);
     // add file location/access information to the database
-    const fileRecord = await database.addFile(filePath);
+    const fileRecord = await database.addFileRecord(filePath);
 
     // save the uploaded file to the file directory
     try {

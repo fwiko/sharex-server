@@ -4,6 +4,7 @@ const db = new sqlite3.Database('data/database.db');
 const config = require('../data/config');
 const utility = require('./utility');
 
+// if the AvailableFiles table does not exist, create it
 db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (
     "ID"	INTEGER NOT NULL UNIQUE,
     "AccessCode"	TEXT NOT NULL UNIQUE,
@@ -24,13 +25,24 @@ database.getFile = function (accessCode) {
 }
 
 // add a new file record to the database
-database.addFile = async function (filePath, _callback) {
+database.addFileRecord = async function (filePath) {
     const accessCode = await database.getNewCode();
     return new Promise(resolve => {
         db.run(`INSERT INTO AvailableFiles (AccessCode, FilePath) VALUES (?, ?)`, [accessCode, filePath], (err) => {
             if (err) throw err;
             console.log(`Added file ${filePath} with access code ${accessCode}`);
             resolve({ accessCode, filePath });
+        });
+    });
+}
+
+// remove a file record from the database
+database.removeFileRecord = function (accessCode) {
+    return new Promise(resolve => {
+        db.run(`DELETE FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err) => {
+            if (err) throw err;
+            console.log(`Removed file ${filePath} with access code ${accessCode}`);
+            resolve();
         });
     });
 }
