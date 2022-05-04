@@ -9,14 +9,11 @@ docker build -t sharex-server .
 ```
 
 ## Start the container
-The `--network` and `--ip` flags are optional here and are only be used if you are using a [docker network](https://docs.docker.com/engine/reference/commandline/network_create/).
-
 The [/data](data/) directory within the container is mounted to the host at `$(pwd)/data` and will hold any uploaded files, in addition to the [config.json](data/config.json) file and database used for link translation.
 
 ```bash
 docker run -d -v $(pwd)/data:/usr/src/app/data \
---network app_net \
---ip <networkIp> \
+-p <hostPort>:80 
 -e PASSWORD_HASH='<passwordHash>' \
 --restart unless-stopped \
 --name sharex-server sharex-server:latest
