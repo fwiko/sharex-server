@@ -1,7 +1,7 @@
 // dependencies
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('data/database.db');
-const config = require('../data/config');
+const config = require('./config');
 const utility = require('./utility');
 
 // if the AvailableFiles table does not exist, create it

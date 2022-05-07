@@ -1,9 +1,7 @@
 // dependencies
-const path = require('path');
 const express = require('express');
 const fileUpload = require('express-fileupload');
-const config = require('../data/config');
-const utility = require('./utility');
+const config = require('./config');
 
 // timestamps for console.log messages
 require('console-stamp')(console, {

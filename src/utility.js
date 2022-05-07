@@ -2,7 +2,7 @@
 const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
-const config = require('../data/config');
+const config = require('./config');
 
 const utility = {}
 
