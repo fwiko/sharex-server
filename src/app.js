@@ -14,9 +14,6 @@ require('dotenv').config({ path: '.env' });
 // initialise express
 const app = express();
 
-// initialise routes
-app.use('/', require('./routes'));
-
 // initialise file upload middleware
 app.use(fileUpload({
     limits: {
@@ -24,6 +21,9 @@ app.use(fileUpload({
         files: 1
     },
 }));
+
+// initialise routes
+app.use('/', require('./routes'));
 
 // trust X-Forwarded-* headers
 app.set('trust proxy', config.server.proxied);
