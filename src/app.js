@@ -14,10 +14,13 @@ require('console-stamp')(console, {
 require('dotenv').config({ path: '.env' });
 
 // initialise express
-const server = express();
+const app = express();
+
+// initialise routes
+app.use('/', require('./routes'));
 
 // initialise file upload middleware
-server.use(fileUpload({
+app.use(fileUpload({
     limits: {
         fileSize: config.files.maxSize * 1024 * 1024,
         files: 1
@@ -25,11 +28,7 @@ server.use(fileUpload({
 }));
 
 // trust X-Forwarded-* headers
-server.set('trust proxy', config.server.proxied);
-
-// initialise routes
-server.use('/', require(path.join(__dirname, 'routing', 'get')));
-server.use('/', require(path.join(__dirname, 'routing', 'post')))
+app.set('trust proxy', config.server.proxied);
 
 // start the server on port 80
-server.listen(config.server.port, () => console.log(`Server started on port ${config.server.port}`));
+app.listen(config.server.port, () => console.log(`Server started on port ${config.server.port}`));
