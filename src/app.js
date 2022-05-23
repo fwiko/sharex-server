@@ -1,20 +1,21 @@
-// dependencies
+// Dependencies
 const express = require('express');
 const fileUpload = require('express-fileupload');
-const config = require('./config');
 
-// timestamps for console.log messages
+const config = require('./configs/config');
+
+// Timestamps for console.log messages
 require('console-stamp')(console, {
-    format: ':date(yyyy/mm/dd HH:MM:ss) :label'
+    format: ':date(yyyy/mm/dd HH:MM:ss)'
 });
 
-// initialise environment variables from .env file
+// Initialise environment variables from .env file
 require('dotenv').config({ path: '.env' });
 
-// initialise express
+// Initialise express
 const app = express();
 
-// initialise file upload middleware
+// Initialise file upload middleware
 app.use(fileUpload({
     limits: {
         fileSize: config.files.maxSize * 1024 * 1024,
@@ -22,11 +23,11 @@ app.use(fileUpload({
     },
 }));
 
-// initialise routes
-app.use('/', require('./routes'));
+// Initialise routes
+app.use('/', require('./routes/routes'));
 
-// trust X-Forwarded-* headers
+// Trust X-Forwarded-* headers
 app.set('trust proxy', config.server.proxied);
 
-// start the server on port 80
+// Start the server on port 80
 app.listen(config.server.port, () => console.log(`Server started on port ${config.server.port}`));

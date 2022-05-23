@@ -1,19 +1,21 @@
 const config = {};
 
-// settings related to the server
+// Settings related to the server
 config.server = {
     port: 80,
-    proxied: true
+    proxied: true,
+    password_hash: process.env.PASSWORD_HASH
 }
 
-// settings related to uploaded files
+// Settings related to uploaded files
 config.files = {
     directory: 'uploads',
     maxSize: 500,
-    disallowedFileTypes: []
+    disallowedFileTypes: [],
+    extensions: ['gif']
 }
 
-// settings related to database file records
+// Settings related to database file records
 config.codes = {
     length: 6,
     characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

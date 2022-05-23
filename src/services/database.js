@@ -1,10 +1,11 @@
-// dependencies
+// Dependencies
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('data/database.db');
-const config = require('./config');
-const utility = require('./utility');
 
-// if the AvailableFiles table does not exist, create it
+const config = require('../configs/config');
+const helpers = require('../utils/helpers');
+
+// Create database tables if they do not exist
 db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (
     "ID"	INTEGER NOT NULL UNIQUE,
     "AccessCode"	TEXT NOT NULL UNIQUE,
@@ -14,7 +15,7 @@ db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (
 
 const database = {};
 
-// retreive a file record using the access code provided with the URL
+// Retreive a file record
 database.getFile = function (accessCode) {
     return new Promise(resolve => {
         db.get(`SELECT * FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err, row) => {
@@ -24,7 +25,7 @@ database.getFile = function (accessCode) {
     });
 }
 
-// add a new file record to the database
+// Add a new file record
 database.addFileRecord = async function (filePath) {
     const accessCode = await database.getNewCode();
     return new Promise(resolve => {
@@ -36,7 +37,7 @@ database.addFileRecord = async function (filePath) {
     });
 }
 
-// remove a file record from the database
+// Remove a file record
 database.removeFileRecord = function (accessCode) {
     return new Promise(resolve => {
         db.run(`DELETE FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err) => {
@@ -47,9 +48,9 @@ database.removeFileRecord = function (accessCode) {
     });
 }
 
-// generate a new UNIQUE access code
+// Generate a unique identifier
 database.getNewCode = function () {
-    const code = utility.randomString(config.codes.length);
+    const code = helpers.randomString(config.codes.length);
     return new Promise(async resolve => {
         await database.getFile(code)
             .then(async fileRecord => {
