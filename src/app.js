@@ -1,33 +1,45 @@
-// Dependencies
+// dependencies
+const path = require('path');
 const express = require('express');
 const fileUpload = require('express-fileupload');
+const { engine } = require('express-handlebars');
 
-const config = require('./configs/config');
-
-// Timestamps for console.log messages
-require('console-stamp')(console, {
-    format: ':date(yyyy/mm/dd HH:MM:ss)'
-});
-
-// Initialise environment variables from .env file
-require('dotenv').config({ path: '.env' });
-
-// Initialise express
 const app = express();
 
-// Initialise file upload middleware
-app.use(fileUpload({
-    limits: {
-        fileSize: config.files.maxSize * 1024 * 1024,
-        files: 1
+// public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// templating engine
+app.engine('handlebars', engine({
+    helpers: {
+        section: function (name, options) {
+            if (!this._sections) this._sections = {};
+            this._sections[name] = options.fn(this);
+            return null;
+        }
     },
+    partialsDir: './views/partials',
+    defaultLayout: 'main'
 }));
+app.set('view engine', 'handlebars');
 
-// Initialise routes
-app.use('/', require('./routes/routes'));
+// file upload middleware
+app.use(fileUpload(
+    {
+        useTempFiles: true,
+        tempFileDir: './tmp/',
+        limits: {
+            fileSize: 50 * 1024 * 1024
+        },
+        abortOnLimit: true
+    }
+));
 
-// Trust X-Forwarded-* headers
-app.set('trust proxy', config.server.proxied);
+// route handlers
+app.use('/', require('./routes'));
 
-// Start the server on port 80
-app.listen(config.server.port, () => console.log(`Server started on port ${config.server.port}`));
+// proxy configuration
+app.set('trust proxy', true);
+
+// start server
+app.listen(8080, () => console.log('server started on port 8080'));

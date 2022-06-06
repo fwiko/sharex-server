@@ -1,0 +1,9 @@
+{{#section 'head'}}
+{{> default }}
+{{> embeddable}}
+<meta property="og:image" content="{{thumbnailUrl}}">
+{{/section}}
+
+<video poster="{{thumbnailUrl}}" autoplay loop controls style="width: 100%;">
+    <source src="{{fileUrl}}" type="{{fileType}}/{{fileSubtype}}">
+</video>
