@@ -24,21 +24,18 @@ const fileUploadHandler = async (req, res) => {
 
     // create file record in database
     const [fileType, fileFormat] = req.files.file.mimetype.split('/');
-    const fileRecord = await Database.addFileRecord(
-        req.files.file.name,
-        fileType,
-        fileFormat
-    );
+    const fileRecord = await Database.addFileRecord(req.files.file.name, fileType, fileFormat);
 
     // return file identifier
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ URL: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${fileRecord.accessCode}` }));
 
     // add resolution of image/video file to database
-    if (req.files.file.mimetype.includes('video') || req.files.file.mimetype.includes('image')) {
+    if (Helpers.getTemplate(fileFormat) != 'default') {
         Helpers.getResolution(req.files.file.name, (err, width, height) => {
-            if (err) console.log(err);
-            Database.updateFileResolution(fileRecord.accessCode, height, width);
+            if (!err) {
+                Database.updateResolution(fileRecord.accessCode, width, height);
+            }
         });
     }
 
@@ -66,10 +63,10 @@ const fileRetreiveHandler = async (req, res) => {
     }
 
     // get the template relative to the file type and whether it is embeddable (supported by HTML)
-    const template = Helpers.getTemplate(fileRecord.FileType);
+    const template = Helpers.getTemplate(fileRecord.FileFormat);
 
     // create new object containing all relevant file information
-    var data = {
+    let data = {
         fileName: fileRecord.FileName,
         fileType: fileRecord.FileType,
         fileFormat: fileRecord.FileFormat,

@@ -45,6 +45,7 @@ const createThumbnail = (fileName, thumbDir, callback) => {
 
 // get resolution of an image/video file
 const getResolution = (fileName, callback) => {
+    // TODO: differentiate between images and videos, images are not supported by ffmpeg
     ffmpeg(getFilePath(fileName))
         .ffprobe(0, function (err, data) {
             callback(err, data.streams[0].width, data.streams[0].height);

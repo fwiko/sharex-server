@@ -1,16 +1,21 @@
 // dependencies
 const sqlite3 = require('sqlite3').verbose();
+const util = require('util');
 
 const Helpers = require('./helpers');
 
 // create and/or open database
-const db = new sqlite3.Database('database.db', (err) => {
-    if (err) {
-        console.error(err.message);
-    }
+let db = new sqlite3.Database('db/database.sqlite3', (err) => {
+    if (err) throw err;
+    console.log('Connected to database');
+});
 
-    // create table if it doesn't exist
-    db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (
+db.run = util.promisify(db.run);
+db.get = util.promisify(db.get);
+
+// create table if it doesn't exist
+db.run(
+    `CREATE TABLE IF NOT EXISTS AvailableFiles (
         "AccessCode"    TEXT NOT NULL UNIQUE,
         "FileName"      TEXT NOT NULL,
         "FileType"      TEXT NOT NULL,
@@ -19,49 +24,37 @@ const db = new sqlite3.Database('database.db', (err) => {
         "Width"         INTEGER,
         
         PRIMARY KEY("AccessCode")
-    );`);
-});
+    );`
+);
 
 // query database for file record
 const getFileRecord = async (accessCode) => {
-    return new Promise(resolve => {
-        db.get(`SELECT * FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err, row) => {
-            if (err) throw err;
-            resolve(row);
-        })
-    })
+    return await db.get(`SELECT * FROM AvailableFiles WHERE AccessCode = ?`, accessCode);
 }
 
 // insert file record into database
-const addFileRecord = async (fileName, fileType) => {
+const addFileRecord = async (fileName, fileType, fileFormat) => {
     const accessCode = await getNewAccessCode();
-    return new Promise(resolve => {
-        db.run(`INSERT INTO AvailableFiles (AccessCode, FileName, FileType) VALUES (?, ?, ?)`, [accessCode, fileName, fileType], (err) => {
-            if (err) throw err;
-            console.log(`Added file record: ${accessCode} -> ${fileName}`);
-            resolve({ accessCode, fileName });
-        });
+    await db.run(`INSERT INTO AvailableFiles (AccessCode, FileName, FileType, FileFormat) VALUES (?, ?, ?, ?)`, [accessCode, fileName, fileType, fileFormat], (err) => {
+        if (err) throw err;
+        console.log(`Added file record: ${accessCode} -> ${fileName}`);
     });
+    return accessCode;
 }
 
 // remove file record from database
 const removeFileRecord = async (accessCode) => {
-    return new Promise(resolve => {
-        db.run(`DELETE FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err) => {
-            if (err) throw err;
-            console.log(`Removed file record: ${accessCode}`);
-            resolve();
-        });
+    await db.run(`DELETE FROM AvailableFiles WHERE AccessCode = ?`, accessCode, (err) => {
+        if (err) throw err;
+        console.log(`Removed file record: ${accessCode}`);
     });
 }
 
-const updateFileResolution = async (accessCode, height, width) => {
-    return new Promise(resolve => {
-        db.run(`UPDATE AvailableFiles SET Height = ?, Width = ? WHERE AccessCode = ?`, [height, width, accessCode], (err) => {
-            if (err) throw err;
-            console.log(`Updated file resolution: ${accessCode} -> ${height}x${width}`);
-            resolve();
-        });
+// update resolution of image/video file record in database
+const updateResolution = async (accessCode, width, height) => {
+    await db.run(`UPDATE AvailableFiles SET Height = ?, Width = ? WHERE AccessCode = ?`, [height, width, accessCode], (err) => {
+        if (err) throw err;
+        console.log(`Updated file resolution: ${accessCode} -> ${height}x${width}`);
     });
 };
 
@@ -85,5 +78,5 @@ module.exports = {
     addFileRecord,
     removeFileRecord,
     getNewAccessCode,
-    updateFileResolution
+    updateResolution
 }

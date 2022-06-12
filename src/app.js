@@ -42,4 +42,4 @@ app.use('/', require('./routes'));
 app.set('trust proxy', true);
 
 // start server
-app.listen(8080, () => console.log('server started on port 8080'));
+app.listen(8080, () => console.log('Server started on port 8080'));
