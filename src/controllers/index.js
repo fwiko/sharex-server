@@ -38,7 +38,7 @@ const fileUploadHandler = async (req, res) => {
     res.end(JSON.stringify({ URL: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${fileRecord.accessCode}` }));
 
     // add resolution of image/video file to database if said file format is HTML supported
-    if (Helpers.getTemplate(fileFormat) != 'default') {
+    if (Helpers.getTemplate(fileType, fileFormat) != 'default') {
         try {
             Helpers.getResolution(req.files.file.name, (width, height) => {
                 Database.updateResolution(fileRecord.accessCode, width, height);
@@ -47,7 +47,7 @@ const fileUploadHandler = async (req, res) => {
     }
 
     // create a thumbnail for the uploaded file if it is a supported video format
-    if (Helpers.getTemplate(fileFormat) === 'video') {
+    if (Helpers.getTemplate(fileType, fileFormat) === 'video') {
         Helpers.createThumbnail(req.files.file.name, path.join(path.dirname(filePath), 'thumbnails'), (err) => {
             if (err) {
                 console.error(`Failed to create a thumbnail for ${req.files.file.name}\n{${err}}`);
@@ -70,7 +70,7 @@ const fileRetreiveHandler = async (req, res) => {
     }
 
     // get the template relative to the file type and whether it is embeddable (supported by HTML)
-    const template = Helpers.getTemplate(fileRecord.FileFormat);
+    const template = Helpers.getTemplate(fileRecord.FileType, fileRecord.FileFormat);
 
     // create new object containing all relevant file information
     let data = {
@@ -87,6 +87,7 @@ const fileRetreiveHandler = async (req, res) => {
         data.Height = fileRecord.Height;
     }
 
+    console.log(template)
     // render the template
     res.status(200).render(template, data);
 }

@@ -57,9 +57,10 @@ const getThumbnailPath = (fileName) => {
 }
 
 // get the name of the template file to be used depending on the file type
-const getTemplate = (fileType) => {
-    const [ft, st] = fileType.split('/');
-    return ft ? /(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(st) && (ft === 'image' || ft === 'video') : 'default';
+const getTemplate = (fileType, fileFormat) => {
+
+    console.log(/(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(fileFormat) && (fileType === 'image' || fileType === 'video'))
+    return /(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(fileFormat) && (fileType === 'image' || fileType === 'video') ? fileType : 'default';
 }
 
 module.exports = {
