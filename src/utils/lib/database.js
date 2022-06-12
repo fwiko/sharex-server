@@ -35,11 +35,9 @@ const getFileRecord = async (accessCode) => {
 // insert file record into database
 const addFileRecord = async (fileName, fileType, fileFormat) => {
     const accessCode = await getNewAccessCode();
-    await db.run(`INSERT INTO AvailableFiles (AccessCode, FileName, FileType, FileFormat) VALUES (?, ?, ?, ?)`, [accessCode, fileName, fileType, fileFormat], (err) => {
-        if (err) throw err;
-        console.log(`Added file record: ${accessCode} -> ${fileName}`);
-    });
-    return accessCode;
+    await db.run(`INSERT INTO AvailableFiles (AccessCode, FileName, FileType, FileFormat) VALUES (?, ?, ?, ?)`, [accessCode, fileName, fileType, fileFormat]);
+    console.log(`Added file record: ${accessCode} -> ${fileName}`);
+    return { accessCode };
 }
 
 // remove file record from database

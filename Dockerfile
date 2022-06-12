@@ -5,7 +5,8 @@ COPY package*.json ./
 
 RUN apk add --no-cache --virtual .gyp python3 make g++ \
     && npm ci --only=production \
-    && apk del .gyp
+    && apk del .gyp \
+    && apt-get install -y ffmpeg
 
 COPY . .
 

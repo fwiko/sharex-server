@@ -39,16 +39,16 @@ const createThumbnail = (fileName, thumbDir, callback) => {
             folder: thumbDir,
             filename: '%b.png'
         })
-        .on('error', function (err) { callback(null, err); })
-        .on('end', function (x) { callback(x, null); });
+        .on('error', function (err) { callback(err); })
+        .on('end', function () { callback(null); })
 }
 
 // get resolution of an image/video file
 const getResolution = (fileName, callback) => {
-    // TODO: differentiate between images and videos, images are not supported by ffmpeg
     ffmpeg(getFilePath(fileName))
         .ffprobe(0, function (err, data) {
-            callback(err, data.streams[0].width, data.streams[0].height);
+            if (err) throw err;
+            callback(data.streams[0].width, data.streams[0].height);
         })
 }
 

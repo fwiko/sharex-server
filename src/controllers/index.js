@@ -9,22 +9,29 @@ const fileUploadHandler = async (req, res) => {
     }
     if (!req.files.file) return res.status(400).json({ error: 'no file provided' });
 
-    // get full path to file
     const filePath = Helpers.getFilePath(req.files.file.name);
 
-    // save file to disk
+    // save the recieved file to the uploads directory
     try {
         Helpers.ensureDirectory(path.dirname(filePath));
         req.files.file.mv(path.resolve(filePath), (err) => {
             if (err) console.log(err);
         });
     } catch (err) {
-        return res.status(500).json({ error: err.message });
+        console.error(err);
+        return res.status(500).json({ error: 'failed to save file to disk' });
     }
 
-    // create file record in database
     const [fileType, fileFormat] = req.files.file.mimetype.split('/');
-    const fileRecord = await Database.addFileRecord(req.files.file.name, fileType, fileFormat);
+
+    // insert a new file record into the database, creating a new access code
+    let fileRecord;
+    try {
+        fileRecord = await Database.addFileRecord(req.files.file.name, fileType, fileFormat);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'failed to add file record to database' });
+    }
 
     // return file identifier
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -32,18 +39,18 @@ const fileUploadHandler = async (req, res) => {
 
     // add resolution of image/video file to database
     if (Helpers.getTemplate(fileFormat) != 'default') {
-        Helpers.getResolution(req.files.file.name, (err, width, height) => {
-            if (!err) {
+        try {
+            Helpers.getResolution(req.files.file.name, (width, height) => {
                 Database.updateResolution(fileRecord.accessCode, width, height);
-            }
-        });
+            });
+        } catch (err) { console.error(err); }
     }
 
-    // check if file is a video and create a thumbnail
-    if (req.files.file.mimetype.includes('video')) {
-        Helpers.createThumbnail(req.files.file.name, path.join(path.dirname(filePath), 'thumbnails'), (res, err) => {
+    // create a thumbnail for the uploaded file if it is a supported video format
+    if (Helpers.getTemplate(fileFormat) === 'video') {
+        Helpers.createThumbnail(req.files.file.name, path.join(path.dirname(filePath), 'thumbnails'), (err) => {
             if (err) {
-                console.log(`Failed to create a thumbnail for ${req.files.file.name}`);
+                console.error(`Failed to create a thumbnail for ${req.files.file.name}\n{${err}}`);
             } else console.log(`Created a thumbnail for ${req.files.file.name}`);
         });
     }
