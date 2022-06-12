@@ -33,11 +33,11 @@ const fileUploadHandler = async (req, res) => {
         return res.status(500).json({ error: 'failed to add file record to database' });
     }
 
-    // return file identifier
+    // return a URL pointing to the uploaded file in the format https://<domain name>/<access code>
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ URL: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${fileRecord.accessCode}` }));
 
-    // add resolution of image/video file to database
+    // add resolution of image/video file to database if said file format is HTML supported
     if (Helpers.getTemplate(fileFormat) != 'default') {
         try {
             Helpers.getResolution(req.files.file.name, (width, height) => {
