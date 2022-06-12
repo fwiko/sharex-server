@@ -23,7 +23,12 @@ const fileUploadHandler = async (req, res) => {
     }
 
     // create file record in database
-    const fileRecord = await Database.addFileRecord(req.files.file.name, req.files.file.mimetype);
+    const [fileType, fileFormat] = req.files.file.mimetype.split('/');
+    const fileRecord = await Database.addFileRecord(
+        req.files.file.name,
+        fileType,
+        fileFormat
+    );
 
     // return file identifier
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -48,8 +53,10 @@ const fileUploadHandler = async (req, res) => {
 }
 
 const fileRetreiveHandler = async (req, res) => {
+    // get file record from database using the specified access code
     const fileRecord = await Database.getFileRecord(req.params.identifier);
 
+    // request validation - check if file exists
     if (!fileRecord) {
         return res.status(404).json({ error: 'file not found' });
     }
@@ -58,24 +65,26 @@ const fileRetreiveHandler = async (req, res) => {
         return res.status(404).json({ error: 'file not found' });
     }
 
-    // TODO: Ensure the image/video is of an embeddable format (png, jpg, gif, webm, mp4, ogg/v, etc.)
-    var template;
-    if (fileRecord.FileType.includes('image') || fileRecord.FileType.includes('video')) {
-        template = fileRecord.FileType.split('/')[0];
+    // get the template relative to the file type and whether it is embeddable (supported by HTML)
+    const template = Helpers.getTemplate(fileRecord.FileType);
+
+    // create new object containing all relevant file information
+    var data = {
+        fileName: fileRecord.FileName,
+        fileType: fileRecord.FileType,
+        fileFormat: fileRecord.FileFormat,
+        fileSize: 0,
+        fileUrl: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${path.join('uploads', fileRecord.FileName)}`
+    };
+
+    // check if the file is an image or video and add resolution to the data object
+    if (template != 'default') {
+        data.Width = fileRecord.Width;
+        data.Height = fileRecord.Height;
     }
 
-
-    // TODO: split into three helper functions depending on whether the file is embeddable (image or video) or not
-    res.status(200).render(template, {
-        fileName: fileRecord.FileName,
-        fileType: fileRecord.FileType.split('/')[0],
-        fileSubtype: fileRecord.FileType.split('/')[1],
-        fileUrl: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${path.join('uploads', fileRecord.FileName)}`,
-        thumbnailUrl: `${req.secure ? 'https' : 'http'}://${req.headers.host}/` + Helpers.getThumbnailPath(fileRecord.FileName),
-        width: fileRecord.Width,
-        height: fileRecord.Height,
-    })
-
+    // render the template
+    res.status(200).render(template, data);
 }
 
 

@@ -43,6 +43,7 @@ const createThumbnail = (fileName, thumbDir, callback) => {
         .on('end', function (x) { callback(x, null); });
 }
 
+// get resolution of an image/video file
 const getResolution = (fileName, callback) => {
     ffmpeg(getFilePath(fileName))
         .ffprobe(0, function (err, data) {
@@ -54,6 +55,12 @@ const getThumbnailPath = (fileName) => {
     return path.join('uploads', 'thumbnails', fileName.split('.')[0] + '.png');
 }
 
+// get the name of the template file to be used depending on the file type
+const getTemplate = (fileType) => {
+    const [ft, st] = fileType.split('/');
+    return ft ? /(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(st) && (ft === 'image' || ft === 'video') : 'default';
+}
+
 module.exports = {
     randomString,
     getFilePath,
@@ -61,5 +68,6 @@ module.exports = {
     checkPassword,
     createThumbnail,
     getResolution,
-    getThumbnailPath
+    getThumbnailPath,
+    getTemplate
 }

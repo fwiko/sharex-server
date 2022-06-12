@@ -11,13 +11,14 @@ const db = new sqlite3.Database('database.db', (err) => {
 
     // create table if it doesn't exist
     db.run(`CREATE TABLE IF NOT EXISTS AvailableFiles (
-        "ID"	INTEGER NOT NULL UNIQUE,
-        "AccessCode"	TEXT NOT NULL UNIQUE,
-        "FileName"	TEXT NOT NULL,
-        "FileType" TEXT NOT NULL,
-        "Height"	INTEGER,
-        "Width"	INTEGER,
-        PRIMARY KEY("ID" AUTOINCREMENT)
+        "AccessCode"    TEXT NOT NULL UNIQUE,
+        "FileName"      TEXT NOT NULL,
+        "FileType"      TEXT NOT NULL,
+        "FileFormat"    TEXT NOT NULL,
+        "Height"        INTEGER,
+        "Width"         INTEGER,
+        
+        PRIMARY KEY("AccessCode")
     );`);
 });
 
