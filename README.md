@@ -9,11 +9,12 @@ docker build -t sharex-server .
 ```
 
 ## Start the container
+
 The [/data](data/) directory within the container is mounted to the host at `$(pwd)/data` and will hold any uploaded files, in addition to the [config.json](data/config.json) file and database used for link translation.
 
 ```bash
 docker run -d -v $(pwd)/data:/usr/src/app/data \
--p <hostPort>:80 
+-p <hostPort>:80
 -e PASSWORD_HASH='<passwordHash>' \
 --restart unless-stopped \
 --name sharex-server sharex-server:latest
@@ -44,4 +45,4 @@ location /upload {
 
 ShareX must be configured to upload files to this server, this can be done by navigating to `Destinations > Custom Uploader Settings`.
 
-![ShareX Configuration](data/sharex_config.png)
+![ShareX Configuration](./config.example.png)
