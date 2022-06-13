@@ -21,6 +21,7 @@ const getFilePath = (fileName) => {
 
 // check that a directory exists, if not create it
 const ensureDirectory = (dir) => {
+    // TODO: make asynchronous, convert to fs.promise
     if (!fs.existsSync(dir)) return fs.mkdirSync(dir, { recursive: true });
     return dir;
 }
@@ -52,17 +53,31 @@ const getResolution = (fileName, callback) => {
         })
 }
 
-const getThumbnailPath = (fileName) => {
-    return path.join('uploads', 'thumbnails', fileName.split('.')[0] + '.png');
-}
+// const getThumbnailPath = (fileName) => {
+//     return path.join('uploads', 'thumbnails', fileName.split('.')[0] + '.png');
+// }
 
 // get the name of the template file to be used depending on the file type
 const getTemplate = (fileType, fileFormat) => {
-
-    console.log(/(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(fileFormat) && (fileType === 'image' || fileType === 'video'))
-    return /(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(fileFormat) && (fileType === 'image' || fileType === 'video') ? fileType : 'default';
+    if (/(gif|jpg|jpeg|png|webp|mp4|webm|ogg)$/i.test(fileFormat) && (fileType === 'image' || fileType === 'video')) {
+        return fileType
+    } else { return 'default'; }
 }
 
+// get the human readable file size paired with the closest unit of data (e.g. 1.5 MB)
+const getFileSize = async (fileName) => {
+    const fileSize = (await fs.promises.stat(getFilePath(fileName))).size;
+    if (-1000 < fileSize && fileSize < 1000) {
+        return `${fileSize} B`
+    }
+    const dataUnits = ['k', 'M', 'G'];
+    let c = 0;
+    while (fileSize <= -999950 || fileSize >= 999950) {
+        fileSize /= 1000;
+        c++;
+    }
+    return `${(fileSize / 1000.0).toFixed(1)} ${dataUnits[c]}B`
+}
 module.exports = {
     randomString,
     getFilePath,
@@ -70,6 +85,6 @@ module.exports = {
     checkPassword,
     createThumbnail,
     getResolution,
-    getThumbnailPath,
+    getFileSize,
     getTemplate
 }

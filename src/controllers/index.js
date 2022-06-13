@@ -37,8 +37,11 @@ const fileUploadHandler = async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ URL: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${fileRecord.accessCode}` }));
 
+    // get the 'type' of the file, determining whether it is a HTML supported media format or not
+    const template = Helpers.getTemplate(fileType, fileFormat)
+
     // add resolution of image/video file to database if said file format is HTML supported
-    if (Helpers.getTemplate(fileType, fileFormat) != 'default') {
+    if (template != 'default') {
         try {
             Helpers.getResolution(req.files.file.name, (width, height) => {
                 Database.updateResolution(fileRecord.accessCode, width, height);
@@ -47,7 +50,7 @@ const fileUploadHandler = async (req, res) => {
     }
 
     // create a thumbnail for the uploaded file if it is a supported video format
-    if (Helpers.getTemplate(fileType, fileFormat) === 'video') {
+    if (template === 'video') {
         Helpers.createThumbnail(req.files.file.name, path.join(path.dirname(filePath), 'thumbnails'), (err) => {
             if (err) {
                 console.error(`Failed to create a thumbnail for ${req.files.file.name}\n{${err}}`);
@@ -58,18 +61,26 @@ const fileUploadHandler = async (req, res) => {
 
 const fileRetreiveHandler = async (req, res) => {
     // get file record from database using the specified access code
-    const fileRecord = await Database.getFileRecord(req.params.identifier);
+    let fileRecord;
+    try {
+        fileRecord = await Database.getFileRecord(req.params.identifier);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ error: 'internal server error, please try again later.' });
+    }
 
     // request validation - check if file exists
     if (!fileRecord) {
-        return res.status(404).json({ error: 'file not found' });
+        return res.status(404).json({ error: `could not find file with identifier ${req.params.identifier}` });
     }
+    // TODO: make asynchronous, convert to fs.promise
     if (!fs.existsSync(Helpers.getFilePath(fileRecord.FileName))) {
+        // TODO: add a try block here
         await Database.removeFileRecord(fileRecord.AccessCode);
-        return res.status(404).json({ error: 'file not found' });
+        return res.status(404).json({ error: `file with identifier ${req.params.identifier} no longer exists` });
     }
 
-    // get the template relative to the file type and whether it is embeddable (supported by HTML)
+    // get the 'type' of the file, determining whether it is a HTML supported media format or not
     const template = Helpers.getTemplate(fileRecord.FileType, fileRecord.FileFormat);
 
     // create new object containing all relevant file information
@@ -77,7 +88,7 @@ const fileRetreiveHandler = async (req, res) => {
         fileName: fileRecord.FileName,
         fileType: fileRecord.FileType,
         fileFormat: fileRecord.FileFormat,
-        fileSize: 0,
+        fileSize: await Helpers.getFileSize(fileRecord.FileName),
         fileUrl: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${path.join('uploads', fileRecord.FileName)}`
     };
 
@@ -87,8 +98,7 @@ const fileRetreiveHandler = async (req, res) => {
         data.Height = fileRecord.Height;
     }
 
-    console.log(template)
-    // render the template
+    // render the template on the client side, passing in the data object to fill out information
     res.status(200).render(template, data);
 }
 
