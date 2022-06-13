@@ -12,6 +12,7 @@ const fileUploadHandler = async (req, res) => {
     const filePath = Helpers.getFilePath(req.files.file.name);
 
     // save the recieved file to the uploads directory
+    // TODO: potentially come up with a different file naming method, sanitise file name as access code
     try {
         Helpers.ensureDirectory(path.dirname(filePath));
         req.files.file.mv(path.resolve(filePath), (err) => {
@@ -60,7 +61,7 @@ const fileUploadHandler = async (req, res) => {
 }
 
 const fileRetreiveHandler = async (req, res) => {
-    // get file record from database using the specified access code
+    // attempt to retreive the relevant file record from the database using the specified identification code
     let fileRecord;
     try {
         fileRecord = await Database.getFileRecord(req.params.identifier);
@@ -68,12 +69,11 @@ const fileRetreiveHandler = async (req, res) => {
         console.error(err);
         return res.status(500).send({ error: 'internal server error, please try again later.' });
     }
-
-    // request validation - check if file exists
     if (!fileRecord) {
         return res.status(404).json({ error: `could not find file with identifier ${req.params.identifier}` });
     }
 
+    // check if the file paired with the requested identification code exists
     const localFilePath = Helpers.getFilePath(fileRecord.FileName)
     if (!await Helpers.checkPathExists(localFilePath)) {
         try {
@@ -105,8 +105,6 @@ const fileRetreiveHandler = async (req, res) => {
     // render the template on the client side, passing in the data object to fill out information
     res.status(200).render(template, data);
 }
-
-
 
 module.exports = {
     fileUploadHandler,
