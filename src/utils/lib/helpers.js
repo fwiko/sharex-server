@@ -71,7 +71,7 @@ const getTemplate = (fileType, fileFormat) => {
 
 // get the human readable file size paired with the closest unit of data (e.g. 1.5 MB)
 const getFileSize = async (fileName) => {
-    const fileSize = (await fs.promises.stat(getFilePath(fileName))).size;
+    let fileSize = (await fs.promises.stat(getFilePath(fileName))).size;
     if (-1000 < fileSize && fileSize < 1000) {
         return `${fileSize} B`
     }
