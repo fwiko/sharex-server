@@ -83,6 +83,7 @@ const getFileSize = async (fileName) => {
     }
     return `${(fileSize / 1000.0).toFixed(1)} ${dataUnits[c]}B`
 }
+
 module.exports = {
     randomString,
     getFilePath,
