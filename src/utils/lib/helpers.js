@@ -19,10 +19,15 @@ const getFilePath = (fileName) => {
     return path.join('public', 'uploads', fileName);
 }
 
+const checkPathExists = async (path) => {
+    return !!(await fs.promises.stat(path).catch(() => null));
+}
+
 // check that a directory exists, if not create it
-const ensureDirectory = (dir) => {
-    // TODO: make asynchronous, convert to fs.promise
-    if (!fs.existsSync(dir)) return fs.mkdirSync(dir, { recursive: true });
+const ensureDirectory = async (dir) => {
+    if (!await checkPathExists(dir)) {
+        await fs.promises.mkdir(dir, { recursive: true });
+    }
     return dir;
 }
 
@@ -86,5 +91,6 @@ module.exports = {
     createThumbnail,
     getResolution,
     getFileSize,
-    getTemplate
+    getTemplate,
+    checkPathExists
 }

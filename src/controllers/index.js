@@ -73,10 +73,14 @@ const fileRetreiveHandler = async (req, res) => {
     if (!fileRecord) {
         return res.status(404).json({ error: `could not find file with identifier ${req.params.identifier}` });
     }
-    // TODO: make asynchronous, convert to fs.promise
-    if (!fs.existsSync(Helpers.getFilePath(fileRecord.FileName))) {
-        // TODO: add a try block here
-        await Database.removeFileRecord(fileRecord.AccessCode);
+
+    const localFilePath = Helpers.getFilePath(fileRecord.FileName)
+    if (!await Helpers.checkPathExists(localFilePath)) {
+        try {
+            await Database.removeFileRecord(fileRecord.AccessCode);
+        } catch (err) {
+            console.error(err);
+        }
         return res.status(404).json({ error: `file with identifier ${req.params.identifier} no longer exists` });
     }
 
