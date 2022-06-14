@@ -5,7 +5,7 @@ const util = require('util');
 const Helpers = require('./helpers');
 
 // create and/or open database
-let db = new sqlite3.Database('db/database.sqlite3', (err) => {
+let db = new sqlite3.Database('data/database.sqlite3', (err) => {
     if (err) throw err;
     console.log('Connected to database');
 });
