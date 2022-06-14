@@ -98,6 +98,7 @@ const fileRetreiveHandler = async (req, res) => {
 
     // check if the file is an image or video and add resolution to the data object
     if (template != 'default') {
+        data.Embed = true;
         data.Width = fileRecord.Width;
         data.Height = fileRecord.Height;
     }
