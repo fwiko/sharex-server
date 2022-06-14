@@ -59,49 +59,78 @@
             border-radius: .5em;
         }
 
+
         .btn {
             padding: .75em;
             border: none;
-            background-color: rgb(0, 221, 11);
+            background-color: #353b58;
             color: white;
             border-radius: .5em;
-            border-bottom: .25em solid green;
-            font-size: 20px;
+            border-bottom: .25em solid #23273b;
+            display: block;
+            text-decoration: none;
         }
 
         .btn:hover {
-            background-color: rgb(0, 161, 8);
+            background-color: #23273b;
             color: white;
-            border-bottom: .25em solid green;
+        }
+
+        .info-box {
+            position: relative;
+            background-color: #0F111A;
+            margin: 1em 0 1em 0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 2em;
+            border: .2em solid #23273b;
+            border-radius: .5em;
+            box-sizing: border-box;
+        }
+
+        .info-box h1 {
+
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        .info-box .info-header {
+            color: white;
+        }
+
+        .info-box .info-stats {
+            color: gray;
+            margin: .2em;
+            display: block;
         }
     </style>
 
 </head>
 
 <body>
-
     <div class="container">
         <div class="content" style="max-width: 100em; max-height: 90em; min-width: 50em;">
-
-            <div class="media" style="width: 100%;">
+            {{!-- container for media if embeddable --}}
+            <div id="media" class="media" style="width: 100%;">
                 {{{body}}}
             </div>
-
-            <div id="everything-but-video">
-                <div class="box " id="footer-content">
-
-                    <div class="title">
-                        <h1>{{fileName}} | {{fileSize}}</h1>
-                    </div>
-                    <button class="btn" style="width:100%"><i class="fa fa-download"></i> Download</button>
-
+            {{!-- container for file information and download option --}}
+            <div id="file-information" class="info-box">
+                {{!-- file name --}}
+                <div class="info-header">
+                    <h1>{{fileName}}</h1>
                 </div>
-            </div>
 
+                {{!-- file statisticas --}}
+                <div class="info-stats">
+                    <span class="info-stat-value">{{fileSize}}</span>
+                </div>
+
+                {{!-- download button --}}
+                <a href="{{fileUrl}}" download="{{fileName}}" class="btn"><i class="fa fa-download"></i>
+                    Download</a>
+            </div>
         </div>
     </div>
-
-
 </body>
 
 </html>
