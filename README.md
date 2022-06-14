@@ -1,6 +1,8 @@
 # ShareX Server
 
-A simple web server allowing files to be uploaded via [ShareX](https://sharex.github.io/), and accessed using the resulting web address.
+A simple [ShareX](https://sharex.github.io/) custom upload server allowing files to be uploaded and then accessed using the resulting web address.
+
+The [Open Graph protocol](https://ogp.me/) has been used to allow for images and videos supported by HTML to be displayed as rich objects on platforms such as Discord and Twitter.
 
 ## Build the image
 
@@ -9,11 +11,12 @@ docker build -t sharex-server .
 ```
 
 ## Start the container
+
 The [/data](data/) directory within the container is mounted to the host at `$(pwd)/data` and will hold any uploaded files, in addition to the [config.json](data/config.json) file and database used for link translation.
 
 ```bash
 docker run -d -v $(pwd)/data:/usr/src/app/data \
--p <hostPort>:80 
+-p <hostPort>:80
 -e PASSWORD_HASH='<passwordHash>' \
 --restart unless-stopped \
 --name sharex-server sharex-server:latest
@@ -36,7 +39,7 @@ Here's how this would be done within an NGINX virtual-host file:
 ```nginx
 location /upload {
     ...
-    client_max_body_size 1000M;
+    client_max_body_size 500M;
 }
 ```
 
@@ -44,4 +47,4 @@ location /upload {
 
 ShareX must be configured to upload files to this server, this can be done by navigating to `Destinations > Custom Uploader Settings`.
 
-![ShareX Configuration](data/sharex_config.png)
+![ShareX Configuration](./config.example.png)

@@ -1,0 +1,16 @@
+{
+    "server": {
+        "hostName": "0.0.0.0",
+        "port": 8080,
+        "trustProxies": true
+    },
+    "uploads": {
+        "path": "uploads",
+        "maxSize": 500,
+        "disallowedFileTypes": [],
+        "sanitiseFileNames": true
+    },
+    "database": {
+        "codeLength": 6
+    }
+}
