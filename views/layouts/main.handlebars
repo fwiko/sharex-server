@@ -25,12 +25,11 @@
         }
 
         body {
-            padding: 0px !important;
-            font-size: 14px;
+            padding: 0;
+            margin: 0;
             font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
             min-height: 100%;
             position: relative;
-            line-height: 1.43;
             height: 100%;
 
         }
@@ -88,9 +87,7 @@
         }
 
         .info-box h1 {
-
-            font-weight: bold;
-            margin-top: 0;
+            margin: 0;
         }
 
         .info-box .info-header {
@@ -99,7 +96,7 @@
 
         .info-box .info-stats {
             color: gray;
-            margin: .2em;
+            padding: 1em;
             display: block;
         }
     </style>
@@ -108,7 +105,7 @@
 
 <body>
     <div class="container">
-        <div class="content" style="max-width: 100em; max-height: 90em; min-width: 50em;">
+        <div class="content" style="max-width: 80em;">
             {{!-- container for media if embeddable --}}
             <div id="media" class="media" style="width: 100%;">
                 {{{body}}}
