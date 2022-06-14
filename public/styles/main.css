@@ -44,7 +44,7 @@ body {
 
 .button:hover {
     background-color: #23273b;
-    border-bottom: .25em solid #353b58;
+    border-bottom: .25em solid #090B10;
     color: white;
 }
 
@@ -75,4 +75,5 @@ body {
 
 .media video, .media img {
     max-height: 65vh;
+    border-radius: .5em;
 }
