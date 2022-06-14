@@ -4,10 +4,12 @@ const util = require('util');
 
 const Helpers = require('./helpers');
 
+// config
+const config = require('../../../data/config');
+
 // create and/or open database
 let db = new sqlite3.Database('data/database.sqlite3', (err) => {
     if (err) throw err;
-    console.log('Connected to database');
 });
 
 db.run = util.promisify(db.run);
@@ -33,8 +35,7 @@ const getFileRecord = async (accessCode) => {
 }
 
 // insert file record into database
-const addFileRecord = async (fileName, fileType, fileFormat) => {
-    const accessCode = await getNewAccessCode();
+const addFileRecord = async (accessCode, fileName, fileType, fileFormat) => {
     await db.run(`INSERT INTO AvailableFiles (AccessCode, FileName, FileType, FileFormat) VALUES (?, ?, ?, ?)`, [accessCode, fileName, fileType, fileFormat]);
     console.log(`Added file record: ${accessCode} -> ${fileName}`);
     return { accessCode };
@@ -58,7 +59,7 @@ const updateResolution = async (accessCode, width, height) => {
 
 // get new unique access code
 const getNewAccessCode = async () => {
-    const accessCode = Helpers.randomString(6);
+    const accessCode = Helpers.randomString(config.database.codeLength);
     return new Promise(async resolve => {
         await getFileRecord(accessCode)
             .then(async (fileRecord) => {
@@ -76,5 +77,6 @@ module.exports = {
     addFileRecord,
     removeFileRecord,
     getNewAccessCode,
-    updateResolution
+    updateResolution,
+    getNewAccessCode
 }

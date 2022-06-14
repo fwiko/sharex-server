@@ -4,6 +4,9 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const { engine } = require('express-handlebars');
 
+// config
+const config = require('../data/config');
+
 const app = express();
 
 // public directory
@@ -29,7 +32,7 @@ app.use(fileUpload(
         useTempFiles: true,
         tempFileDir: './tmp/',
         limits: {
-            fileSize: 50 * 1024 * 1024
+            fileSize: config.uploads.maxSize * 1024 * 1024
         },
         abortOnLimit: true
     }
@@ -39,7 +42,7 @@ app.use(fileUpload(
 app.use('/', require('./routes'));
 
 // proxy configuration
-app.set('trust proxy', true);
+app.set('trust proxy', config.server.trustProxies);
 
 // start server
-app.listen(8080, () => console.log('Server started on port 8080'));
+app.listen(config.server.port, config.server.hostName, () => console.log(`Server listening on port ${config.server.port}`));

@@ -4,9 +4,13 @@ const path = require('path');
 const ffmpeg = require('fluent-ffmpeg');
 const bcrypt = require('bcrypt');
 
+// config
+const config = require('../../../data/config');
+
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
 // returns a random string of specified length
 const randomString = function (length) {
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var string = '';
     for (var i = 0; i < length; i++) {
         string += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -16,7 +20,7 @@ const randomString = function (length) {
 
 // return a complete file path e.g. /public/uploads/file.png
 const getFilePath = (fileName) => {
-    return path.join('public', 'uploads', fileName);
+    return path.join('public', config.uploads.path, fileName);
 }
 
 const checkPathExists = async (path) => {
