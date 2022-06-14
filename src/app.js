@@ -7,6 +7,14 @@ const { engine } = require('express-handlebars');
 // config
 const config = require('../data/config');
 
+// Timestamps for console.log messages
+require('console-stamp')(console, {
+    format: ':date(yyyy/mm/dd HH:MM:ss)'
+});
+
+// Initialise environment variables from .env file
+require('dotenv').config({ path: '.env' });
+
 const app = express();
 
 // public directory

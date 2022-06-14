@@ -1,6 +1,8 @@
 # ShareX Server
 
-A simple web server allowing files to be uploaded via [ShareX](https://sharex.github.io/), and accessed using the resulting web address.
+A simple [ShareX](https://sharex.github.io/) custom upload server allowing files to be uploaded and then accessed using the resulting web address.
+
+The [Open Graph protocol](https://ogp.me/) has been used to allow for images and videos supported by HTML to be displayed as rich objects on platforms such as Discord and Twitter.
 
 ## Build the image
 
@@ -37,7 +39,7 @@ Here's how this would be done within an NGINX virtual-host file:
 ```nginx
 location /upload {
     ...
-    client_max_body_size 1000M;
+    client_max_body_size 500M;
 }
 ```
 

@@ -7,7 +7,11 @@ const { Helpers, Database } = require('../utils');
 const config = require('../../data/config');
 
 const fileUploadHandler = async (req, res) => {
-    if (!req.headers.password /* || Helpers.checkPassword(req.headers.password, "xx") */) {
+    // password & request validation
+    if (!process.env.PASSWORD_HASH) {
+        return res.status(500).json({ error: 'password not set' });
+    }
+    if (!req.headers.password || !await Helpers.checkPassword(req.headers.password, process.env.PASSWORD_HASH)) {
         return res.status(403).json({ error: 'invalid password' });
     }
     if (!req.files.file) return res.status(400).json({ error: 'no file provided' });
