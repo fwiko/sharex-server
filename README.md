@@ -15,10 +15,11 @@ docker build -t sharex-server .
 The [/data](data/) directory within the container is mounted to the host at `$(pwd)/data` and will hold any uploaded files, in addition to the [config.json](data/config.json) file and database used for link translation.
 
 ```bash
-docker run -d -v $(pwd)/data:/usr/src/app/data \
--p <hostPort>:80
--e PASSWORD_HASH='<passwordHash>' \
---restart unless-stopped \
+docker run -d -v $(pwd)/public/uploads:/usr/src/app/public/uploads \
+-v $(pwd)/data:/usr/src/app/data \
+--network app_net \
+--ip 172.18.0.4 \
+-e PASSWORD_HASH='<password_hash>' \
 --name sharex-server sharex-server:latest
 ```
 
