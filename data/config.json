@@ -12,5 +12,8 @@
     },
     "database": {
         "codeLength": 6
+    },
+    "apperance": {
+        "themeColour": "#32a852"
     }
 }

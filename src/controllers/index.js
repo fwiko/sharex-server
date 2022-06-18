@@ -111,7 +111,8 @@ const fileRetreiveHandler = async (req, res) => {
         fileType: fileRecord.FileType,
         fileFormat: fileRecord.FileFormat,
         fileSize: await Helpers.getFileSize(fileRecord.FileName),
-        fileUrl: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${path.join(config.uploads.path, fileRecord.FileName)}`
+        fileUrl: `${req.secure ? 'https' : 'http'}://${req.headers.host}/${path.join(config.uploads.path, fileRecord.FileName)}`,
+        themeColour: config.apperance.themeColour
     };
 
     // check if the file is an image or video and add resolution to the data object
