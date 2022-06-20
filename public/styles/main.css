@@ -78,3 +78,11 @@ body {
     max-height: 65vh;
     border-radius: .5em;
 }
+
+.error {
+    color: white;
+}
+
+.error .error-message {
+    color: gray;
+}

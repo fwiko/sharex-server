@@ -6,6 +6,14 @@ const { Helpers, Database } = require('../utils');
 // config
 const config = require('../../data/config');
 
+const invalidRequestResponse = (res, status, message) => {
+    res.status(status).render('error', { layout: false, message: message, status: status });
+}
+
+const baseRequestHandler = (req, res) => {
+    res.redirect(config.server.redirectUrl)
+}
+
 const fileUploadHandler = async (req, res) => {
     // password & request validation
     if (!process.env.PASSWORD_HASH) {
@@ -62,8 +70,9 @@ const fileUploadHandler = async (req, res) => {
     // add resolution of image/video file to database if said file format is HTML supported
     if (template != 'default') {
         try {
-            Helpers.getResolution(fileName, (width, height) => {
-                Database.updateResolution(fileRecord.accessCode, width, height);
+            Helpers.getResolution(fileName, async (width, height) => {
+                // TODO: might need try catch here
+                await Database.updateResolution(fileRecord.accessCode, width, height);
             });
         } catch (err) { console.error(err); }
     }
@@ -85,10 +94,10 @@ const fileRetreiveHandler = async (req, res) => {
         fileRecord = await Database.getFileRecord(req.params.identifier);
     } catch (err) {
         console.error(err);
-        return res.status(500).send({ error: 'internal server error, please try again later.' });
+        return invalidRequestResponse(res, 500, 'Internal server error, please try again later.');
     }
     if (!fileRecord) {
-        return res.status(404).json({ error: `could not find file with identifier ${req.params.identifier}` });
+        return invalidRequestResponse(res, 404, `Unable to find file with identifier <span style="color: #32a852;">${req.params.identifier}</span>.`);
     }
 
     // check if the file paired with the requested identification code exists
@@ -99,7 +108,7 @@ const fileRetreiveHandler = async (req, res) => {
         } catch (err) {
             console.error(err);
         }
-        return res.status(404).json({ error: `file with identifier ${req.params.identifier} no longer exists` });
+        return invalidRequestResponse(res, 404, `The file with identifier <span style="color: #32a852;">${req.params.identifier}</span> no longer exists.`);
     }
 
     // get the 'type' of the file, determining whether it is a HTML supported media format or not
@@ -127,6 +136,7 @@ const fileRetreiveHandler = async (req, res) => {
 }
 
 module.exports = {
+    baseRequestHandler,
     fileUploadHandler,
-    fileRetreiveHandler
+    fileRetreiveHandler,
 }
