@@ -34,16 +34,16 @@ body {
 .button {
     padding: .75em;
     border: none;
-    background-color: #353b58;
+    background-color: #48aa00;
     color: white;
     border-radius: .5em;
-    border-bottom: .25em solid #23273b;
+    border-bottom: .25em solid #4b8f00;
     display: block;
     text-decoration: none;
 }
 
 .button:hover {
-    background-color: #23273b;
+    background-color: #4b8f00;
     border-bottom: none;
     margin-top: .25em;
     color: white;

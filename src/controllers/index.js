@@ -43,6 +43,7 @@ const fileUploadHandler = async (req, res) => {
     let fileRecord;
     try {
         fileRecord = await Database.addFileRecord(accessCode, fileName, fileType, fileFormat);
+        console.log(`Added file record: ${accessCode} -> ${fileName}`);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'failed to add file record to database' });
@@ -57,6 +58,7 @@ const fileUploadHandler = async (req, res) => {
     } catch (err) {
         console.error(err);
         await Database.removeFileRecord(fileRecord.accessCode);
+        console.log(`Removed file record: ${accessCode}`);
         return res.status(500).json({ error: 'failed to save file to disk' });
     }
 
@@ -71,8 +73,8 @@ const fileUploadHandler = async (req, res) => {
     if (template != 'default') {
         try {
             Helpers.getResolution(fileName, async (width, height) => {
-                // TODO: might need try catch here
                 await Database.updateResolution(fileRecord.accessCode, width, height);
+                console.log(`Updated file resolution: ${accessCode} -> ${height}x${width}`);
             });
         } catch (err) { console.error(err); }
     }
@@ -105,6 +107,7 @@ const fileRetreiveHandler = async (req, res) => {
     if (!await Helpers.checkPathExists(localFilePath)) {
         try {
             await Database.removeFileRecord(fileRecord.AccessCode);
+            console.log(`Removed file record: ${accessCode}`);
         } catch (err) {
             console.error(err);
         }

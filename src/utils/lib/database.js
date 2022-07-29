@@ -37,20 +37,17 @@ const getFileRecord = async (accessCode) => {
 // insert file record into database
 const addFileRecord = async (accessCode, fileName, fileType, fileFormat) => {
     await db.run(`INSERT INTO AvailableFiles (AccessCode, FileName, FileType, FileFormat) VALUES (?, ?, ?, ?)`, [accessCode, fileName, fileType, fileFormat]);
-    console.log(`Added file record: ${accessCode} -> ${fileName}`);
     return { accessCode };
 }
 
 // remove file record from database
 const removeFileRecord = async (accessCode) => {
     await db.run(`DELETE FROM AvailableFiles WHERE AccessCode = ?`, accessCode);
-    console.log(`Removed file record: ${accessCode}`);
 }
 
 // update resolution of image/video file record in database
 const updateResolution = async (accessCode, width, height) => {
     await db.run(`UPDATE AvailableFiles SET Height = ?, Width = ? WHERE AccessCode = ?`, [height, width, accessCode])
-    console.log(`Updated file resolution: ${accessCode} -> ${height}x${width}`);
 };
 
 // get new unique access code
