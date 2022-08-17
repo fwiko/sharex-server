@@ -39,3 +39,15 @@ export const uploadObject = ({ objectName, filePath, fileType }) => {
         })
     });
 }
+
+export const deleteObject = ({ objectName }) => {
+    return new Promise((resolve, reject) => {
+        s3Client.deleteObject({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: objectName
+        }, (err, res) => {
+            if (err) reject(err);
+            return resolve(res)
+        })
+    })
+}
