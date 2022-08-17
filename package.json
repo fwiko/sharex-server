@@ -1,32 +1,20 @@
 {
-  "name": "sharex-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/app.js",
+  "name": "file-server",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "nodemon src/app.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fwiko/sharex-server.git"
-  },
-  "author": "Rafferty Simms",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fwiko/sharex-server/issues"
-  },
-  "homepage": "https://github.com/fwiko/sharex-server#readme",
   "dependencies": {
-    "bcrypt": "^5.0.1",
-    "console-stamp": "^3.0.6",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "express-fileupload": "^1.4.0",
-    "express-handlebars": "^6.0.6",
-    "fluent-ffmpeg": "^2.1.2",
-    "sqlite3": "^5.0.8"
+    "next": "12.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "eslint": "8.22.0",
+    "eslint-config-next": "12.2.5"
   }
 }

@@ -1,51 +1,34 @@
-# ShareX Server
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-A simple [ShareX](https://sharex.github.io/) custom upload server allowing files to be uploaded and then accessed using the resulting web address.
+## Getting Started
 
-The [Open Graph protocol](https://ogp.me/) has been used to allow for images and videos supported by HTML to be displayed as rich objects on platforms such as Discord and Twitter.
-
-## Build the image
+First, run the development server:
 
 ```bash
-docker build -t sharex-server .
+npm run dev
+# or
+yarn dev
 ```
 
-## Start the container
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The [/data](data/) directory within the container is mounted to the host at `$(pwd)/data` and will hold any uploaded files, in addition to the [config.json](data/config.json) file and database used for link translation.
+You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-```bash
-docker run -d -v $(pwd)/public/uploads:/usr/src/app/public/uploads \
--v $(pwd)/data:/usr/src/app/data \
---network app_net \
---ip 172.18.0.4 \
--e PASSWORD_HASH='<password_hash>' \
---name sharex-server sharex-server:latest
-```
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
 
-The `PASSWORD_HASH` variable must be created using bcrypt as can be done using the [bcrypt module](https://www.npmjs.com/package/bcrypt).
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-```bash
-> const bcrypt = require('bcrypt');
-> await bcrypt.hash("password", 8);
-'$2b$08$ZF0zv8n7zhKiBOPOSXs1g.FhDXwf4GYxEZXHVGXq7yrfUruBrijmO'
-```
+## Learn More
 
-## Running through a reverse proxy?
+To learn more about Next.js, take a look at the following resources:
 
-If you are running through a reverse proxy such as [NGINX](https://www.nginx.com/), you must include the `client_max_body_size` option the respective virtual-host file and reflect your `maxSize` value set within the [config.json](data/config.json) file.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Here's how this would be done within an NGINX virtual-host file:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-```nginx
-location /upload {
-    ...
-    client_max_body_size 500M;
-}
-```
+## Deploy on Vercel
 
-## ShareX Configuration
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-ShareX must be configured to upload files to this server, this can be done by navigating to `Destinations > Custom Uploader Settings`.
-
-![ShareX Configuration](./config.example.png)
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
